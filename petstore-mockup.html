@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PetStore Admin Portal</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --color-background-primary:#ffffff;
+  --color-background-secondary:#f5f5f4;
+  --color-background-tertiary:#efede8;
+  --color-text-primary:#1a1a18;
+  --color-text-secondary:#6b6b67;
+  --color-text-tertiary:#9e9e9a;
+  --color-border-tertiary:rgba(0,0,0,0.12);
+  --color-border-secondary:rgba(0,0,0,0.22);
+  --color-border-primary:rgba(0,0,0,0.32);
+  --border-radius-md:8px;
+  --border-radius-lg:12px;
+  --border-radius-xl:16px;
+  --font-sans:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --sidebar-w:210px;
+  --amber-50:#FAEEDA;--amber-100:#FAC775;--amber-400:#BA7517;--amber-600:#854F0B;--amber-800:#633806;
+  --teal-50:#E1F5EE;--teal-400:#1D9E75;--teal-600:#0F6E56;
+  --coral-50:#FAECE7;--coral-400:#D85A30;
+  --green-50:#EAF3DE;--green-400:#639922;
+  --red-50:#FCEBEB;--red-400:#E24B4A;
+  --blue-50:#E6F1FB;--blue-400:#378ADD;
+}
+body{font-family:var(--font-sans);font-size:14px;color:var(--color-text-primary);background:var(--color-background-tertiary);min-height:100vh;padding:0}
+.app{display:flex;min-height:100vh;background:var(--color-background-tertiary)}
+.sidebar{width:var(--sidebar-w);background:var(--color-background-primary);border-right:1px solid var(--color-border-tertiary);display:flex;flex-direction:column;flex-shrink:0;position:fixed;top:0;left:0;height:100vh;z-index:10}
+.sidebar-logo{padding:20px 16px 16px;border-bottom:1px solid var(--color-border-tertiary)}
+.logo-mark{display:flex;align-items:center;gap:8px}
+.logo-icon{width:32px;height:32px;background:var(--amber-400);border-radius:8px;display:flex;align-items:center;justify-content:center}
+.logo-icon svg{width:18px;height:18px;fill:white}
+.logo-text{font-size:15px;font-weight:500;color:var(--color-text-primary)}
+.logo-sub{font-size:11px;color:var(--color-text-secondary);margin-top:1px}
+.nav{padding:12px 8px;flex:1;overflow-y:auto}
+.nav-section{margin-bottom:20px}
+.nav-label{font-size:10px;font-weight:500;color:var(--color-text-tertiary);text-transform:uppercase;letter-spacing:0.08em;padding:0 8px;margin-bottom:4px}
+.nav-item{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:var(--border-radius-md);cursor:pointer;color:var(--color-text-secondary);font-size:13px;transition:background 0.1s;user-select:none}
+.nav-item:hover{background:var(--color-background-secondary)}
+.nav-item.active{background:var(--amber-50);color:var(--amber-600)}
+.nav-item svg{width:15px;height:15px;flex-shrink:0;opacity:0.7}
+.nav-item.active svg{opacity:1;color:var(--amber-600)}
+.nav-count{margin-left:auto;background:var(--color-background-secondary);color:var(--color-text-secondary);font-size:10px;padding:1px 6px;border-radius:10px}
+.nav-item.active .nav-count{background:var(--amber-100);color:var(--amber-600)}
+.sidebar-user{padding:12px 16px;border-top:1px solid var(--color-border-tertiary);display:flex;align-items:center;gap:8px}
+.user-avatar{width:28px;height:28px;border-radius:50%;background:var(--amber-50);border:1.5px solid var(--amber-100);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:var(--amber-600);flex-shrink:0}
+.user-name{font-size:12px;font-weight:500}
+.user-role{font-size:10px;color:var(--color-text-tertiary)}
+.main{flex:1;display:flex;flex-direction:column;margin-left:var(--sidebar-w);min-width:0}
+.topbar{padding:14px 20px;border-bottom:1px solid var(--color-border-tertiary);background:var(--color-background-primary);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:9}
+.topbar-title{font-size:16px;font-weight:500}
+.topbar-actions{display:flex;gap:8px}
+.btn{padding:6px 12px;border-radius:var(--border-radius-md);border:1px solid var(--color-border-secondary);background:var(--color-background-primary);font-size:12px;cursor:pointer;color:var(--color-text-primary);font-family:inherit;transition:background 0.1s}
+.btn:hover{background:var(--color-background-secondary)}
+.btn-primary{background:var(--amber-400);color:white;border-color:var(--amber-400)}
+.btn-primary:hover{background:var(--amber-600);border-color:var(--amber-600)}
+.btn-danger{color:var(--coral-400);border-color:var(--coral-400)}
+.btn-sm{padding:4px 8px;font-size:11px}
+.content{padding:20px;flex:1}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.stat-card{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:14px 16px;border:1px solid var(--color-border-tertiary)}
+.stat-label{font-size:11px;color:var(--color-text-secondary);margin-bottom:6px}
+.stat-val{font-size:22px;font-weight:500}
+.stat-change{font-size:11px;margin-top:4px}
+.filters{display:flex;gap:8px;margin-bottom:16px;align-items:center;flex-wrap:wrap}
+.filter-tab{padding:5px 12px;border-radius:20px;border:1px solid var(--color-border-tertiary);background:var(--color-background-primary);font-size:12px;cursor:pointer;color:var(--color-text-secondary);user-select:none}
+.filter-tab.active{background:var(--amber-50);border-color:var(--amber-100);color:var(--amber-600)}
+.search-input{padding:6px 10px;border-radius:var(--border-radius-md);border:1px solid var(--color-border-tertiary);background:var(--color-background-primary);font-size:12px;color:var(--color-text-primary);font-family:inherit;width:160px;outline:none}
+.search-input:focus{border-color:var(--amber-100)}
+.pets-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.pet-card{background:var(--color-background-primary);border:1px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:14px;cursor:pointer;transition:border-color 0.15s}
+.pet-card:hover{border-color:var(--amber-100)}
+.pet-avatar{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:10px;background:var(--amber-50)}
+.pet-name{font-size:14px;font-weight:500;margin-bottom:2px}
+.pet-meta{font-size:11px;color:var(--color-text-secondary);margin-bottom:8px}
+.badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:500}
+.badge-available{background:var(--teal-50);color:var(--teal-600)}
+.badge-pending{background:var(--amber-50);color:var(--amber-600)}
+.badge-sold{background:var(--red-50);color:var(--red-400)}
+.badge-placed{background:var(--blue-50);color:var(--blue-400)}
+.badge-approved{background:var(--green-50);color:var(--green-400)}
+.badge-delivered{background:var(--teal-50);color:var(--teal-600)}
+.pet-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+.tag{background:var(--color-background-secondary);color:var(--color-text-secondary);font-size:10px;padding:2px 6px;border-radius:4px;border:1px solid var(--color-border-tertiary)}
+.detail-header{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px}
+.detail-avatar{width:72px;height:72px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:36px;flex-shrink:0;background:var(--amber-50);border:1px solid var(--amber-100)}
+.detail-name{font-size:18px;font-weight:500;margin-bottom:4px}
+.detail-id{font-size:11px;color:var(--color-text-tertiary);margin-bottom:8px}
+.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field{margin-bottom:14px}
+.field-label{font-size:11px;color:var(--color-text-secondary);margin-bottom:4px}
+.field-val{font-size:13px}
+.form-group{margin-bottom:14px}
+.form-label{font-size:12px;color:var(--color-text-secondary);margin-bottom:5px;display:block}
+.form-input{width:100%;padding:7px 10px;border:1px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);background:var(--color-background-primary);font-size:13px;color:var(--color-text-primary);font-family:inherit;outline:none}
+.form-input:focus{border-color:var(--amber-100)}
+.form-select{width:100%;padding:7px 10px;border:1px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);background:var(--color-background-primary);font-size:13px;color:var(--color-text-primary);font-family:inherit;cursor:pointer;outline:none}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.upload-zone{border:1.5px dashed var(--color-border-secondary);border-radius:var(--border-radius-lg);padding:20px;text-align:center;cursor:pointer;color:var(--color-text-secondary);font-size:12px}
+.upload-zone:hover{background:var(--color-background-secondary);border-color:var(--amber-100)}
+.table{width:100%;border-collapse:collapse}
+.table th{font-size:11px;color:var(--color-text-secondary);font-weight:500;text-align:left;padding:8px 12px;border-bottom:1px solid var(--color-border-tertiary);background:var(--color-background-secondary)}
+.table td{padding:10px 12px;border-bottom:1px solid var(--color-border-tertiary);font-size:13px;vertical-align:middle}
+.table tr:last-child td{border-bottom:none}
+.table tr:hover td{background:var(--color-background-secondary)}
+.inventory-bar{height:6px;border-radius:3px;background:var(--color-background-secondary);overflow:hidden;margin-top:4px;border:1px solid var(--color-border-tertiary)}
+.inventory-fill{height:100%;border-radius:3px;background:var(--amber-400)}
+.section-card{background:var(--color-background-primary);border:1px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;margin-bottom:16px}
+.section-card-header{padding:12px 16px;border-bottom:1px solid var(--color-border-tertiary);display:flex;align-items:center;justify-content:space-between;background:var(--color-background-primary)}
+.section-card-title{font-size:13px;font-weight:500}
+.back-btn{font-size:12px;color:var(--amber-600);cursor:pointer;display:inline-flex;align-items:center;gap:4px;padding:0;background:none;border:none;font-family:inherit;margin-bottom:16px}
+.back-btn:hover{color:var(--amber-800)}
+.empty-state{text-align:center;padding:40px 20px;color:var(--color-text-secondary);font-size:13px}
+.form-actions{display:flex;gap:8px;justify-content:flex-end;padding-top:12px;border-top:1px solid var(--color-border-tertiary);margin-top:16px}
+.photo-thumb{width:56px;height:56px;border-radius:var(--border-radius-md);background:var(--amber-50);border:1px solid var(--amber-100);display:flex;align-items:center;justify-content:center;font-size:24px}
+.photo-preview{display:flex;gap:8px;flex-wrap:wrap}
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.dist-row{display:flex;align-items:center;gap:8px;flex:1}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24"><path d="M4.5 6.5a4 4 0 1 1 4 4 4 4 0 0 1-4-4zm10.5 0a4 4 0 1 1 4 4 4 4 0 0 1-4-4zm-9.5 9a4 4 0 1 1 4 4 4 4 0 0 1-4-4zm9.5 0a4 4 0 1 1 4 4 4 4 0 0 1-4-4z"/></svg>
+        </div>
+        <div>
+          <div class="logo-text">PetStore</div>
+          <div class="logo-sub">Admin Portal</div>
+        </div>
+      </div>
+    </div>
+    <nav class="nav">
+      <div class="nav-section">
+        <div class="nav-label">Overview</div>
+        <div class="nav-item active" onclick="nav('dashboard')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          Dashboard
+        </div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-label">Pets</div>
+        <div class="nav-item" onclick="nav('pets')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3"/><circle cx="15" cy="8" r="3"/><path d="M3 19c0-3.3 2.7-6 6-6h6c3.3 0 6 2.7 6 6"/></svg>
+          All Pets
+          <span class="nav-count">9</span>
+        </div>
+        <div class="nav-item" onclick="nav('add-pet')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+          Add New Pet
+        </div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-label">Store</div>
+        <div class="nav-item" onclick="nav('inventory')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+          Inventory
+        </div>
+        <div class="nav-item" onclick="nav('orders')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          Orders
+          <span class="nav-count">5</span>
+        </div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-label">Users</div>
+        <div class="nav-item" onclick="nav('users')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Users
+          <span class="nav-count">5</span>
+        </div>
+      </div>
+    </nav>
+    <div class="sidebar-user">
+      <div class="user-avatar">JD</div>
+      <div>
+        <div class="user-name">John Doe</div>
+        <div class="user-role">Administrator</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div id="topbar-title" class="topbar-title">Dashboard</div>
+      <div class="topbar-actions" id="topbar-actions"></div>
+    </div>
+    <div class="content" id="main-content"></div>
+  </div>
+</div>
+
+<script>
+const PETS=[
+  {id:1,name:'Buddy',category:'Dogs',status:'available',emoji:'🐕',tags:['playful','trained'],photos:2},
+  {id:2,name:'Whiskers',category:'Cats',status:'available',emoji:'🐈',tags:['indoor','calm'],photos:1},
+  {id:3,name:'Tweety',category:'Birds',status:'pending',emoji:'🦜',tags:['vocal','colorful'],photos:1},
+  {id:4,name:'Nemo',category:'Fish',status:'available',emoji:'🐠',tags:['tropical','tank'],photos:0},
+  {id:5,name:'Rex',category:'Dogs',status:'sold',emoji:'🐶',tags:['large','guard'],photos:3},
+  {id:6,name:'Luna',category:'Cats',status:'available',emoji:'😺',tags:['outdoor','hunter'],photos:2},
+  {id:7,name:'Nibbles',category:'Rabbits',status:'pending',emoji:'🐇',tags:['small','gentle'],photos:1},
+  {id:8,name:'Goldie',category:'Fish',status:'available',emoji:'🐡',tags:['goldfish','easy'],photos:0},
+  {id:9,name:'Max',category:'Dogs',status:'available',emoji:'🦮',tags:['labrador','friendly'],photos:2},
+];
+const ORDERS=[
+  {id:1001,petId:5,petName:'Rex',quantity:1,status:'delivered',shipDate:'2025-04-10',customer:'Alice M.'},
+  {id:1002,petId:3,petName:'Tweety',quantity:1,status:'approved',shipDate:'2025-04-18',customer:'Bob K.'},
+  {id:1003,petId:7,petName:'Nibbles',quantity:2,status:'placed',shipDate:'2025-04-22',customer:'Carol S.'},
+  {id:1004,petId:1,petName:'Buddy',quantity:1,status:'placed',shipDate:'2025-04-23',customer:'Dave L.'},
+  {id:1005,petId:6,petName:'Luna',quantity:1,status:'approved',shipDate:'2025-04-21',customer:'Eve P.'},
+];
+const USERS=[
+  {id:1,username:'johndoe',firstName:'John',lastName:'Doe',email:'john@petstore.io',phone:'+1-555-0101',userStatus:1,role:'Admin'},
+  {id:2,username:'alicemoss',firstName:'Alice',lastName:'Moss',email:'alice@petstore.io',phone:'+1-555-0102',userStatus:1,role:'Staff'},
+  {id:3,username:'bobkane',firstName:'Bob',lastName:'Kane',email:'bob@petstore.io',phone:'+1-555-0103',userStatus:0,role:'Staff'},
+  {id:4,username:'carolsmith',firstName:'Carol',lastName:'Smith',email:'carol@petstore.io',phone:'+1-555-0104',userStatus:1,role:'Customer'},
+  {id:5,username:'davelee',firstName:'Dave',lastName:'Lee',email:'dave@petstore.io',phone:'+1-555-0105',userStatus:1,role:'Customer'},
+];
+
+let currentPage='dashboard';
+let filterStatus='all';
+let selectedPet=null;
+
+function nav(page){
+  currentPage=page;
+  filterStatus='all';
+  selectedPet=null;
+  document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
+  const map={dashboard:0,pets:1,'add-pet':2,inventory:3,orders:4,users:5};
+  document.querySelectorAll('.nav-item')[map[page]||0].classList.add('active');
+  render();
+}
+
+function render(){
+  const titles={dashboard:'Dashboard',pets:'All Pets','add-pet':'Add New Pet',inventory:'Inventory',orders:'Orders',users:'Users','pet-detail':'Pet Details'};
+  document.getElementById('topbar-title').textContent=titles[currentPage]||'';
+  const actions=document.getElementById('topbar-actions');
+  const content=document.getElementById('main-content');
+  if(currentPage==='dashboard')renderDashboard(content,actions);
+  else if(currentPage==='pets')renderPets(content,actions);
+  else if(currentPage==='pet-detail')renderPetDetail(content,actions);
+  else if(currentPage==='add-pet')renderAddPet(content,actions);
+  else if(currentPage==='inventory')renderInventory(content,actions);
+  else if(currentPage==='orders')renderOrders(content,actions);
+  else if(currentPage==='users')renderUsers(content,actions);
+}
+
+function renderDashboard(c,a){
+  a.innerHTML='';
+  const avail=PETS.filter(p=>p.status==='available').length;
+  const pending=PETS.filter(p=>p.status==='pending').length;
+  const sold=PETS.filter(p=>p.status==='sold').length;
+  c.innerHTML=`
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-label">Total Pets</div><div class="stat-val">${PETS.length}</div><div class="stat-change" style="color:var(--teal-400)">+3 this week</div></div>
+      <div class="stat-card"><div class="stat-label">Available</div><div class="stat-val" style="color:var(--teal-600)">${avail}</div><div class="stat-change" style="color:var(--color-text-secondary)">Ready to adopt</div></div>
+      <div class="stat-card"><div class="stat-label">Pending Orders</div><div class="stat-val" style="color:var(--amber-600)">${pending+2}</div><div class="stat-change" style="color:var(--color-text-secondary)">Awaiting pickup</div></div>
+      <div class="stat-card"><div class="stat-label">Sold (month)</div><div class="stat-val" style="color:var(--coral-400)">${sold+4}</div><div class="stat-change" style="color:var(--teal-400)">+2 vs last month</div></div>
+    </div>
+    <div class="dash-grid">
+      <div class="section-card">
+        <div class="section-card-header"><span class="section-card-title">Recent Pets</span><button class="btn btn-sm" onclick="nav('pets')">View all</button></div>
+        <div>
+          ${PETS.slice(0,5).map(p=>`
+            <div style="display:flex;align-items:center;gap:10px;padding:9px 16px;cursor:pointer;border-bottom:1px solid var(--color-border-tertiary)" onclick="openPet(${p.id})">
+              <div style="font-size:20px;width:32px;text-align:center">${p.emoji}</div>
+              <div style="flex:1"><div style="font-size:13px;font-weight:500">${p.name}</div><div style="font-size:11px;color:var(--color-text-secondary)">${p.category}</div></div>
+              <span class="badge badge-${p.status}">${p.status}</span>
+            </div>`).join('')}
+        </div>
+      </div>
+      <div class="section-card">
+        <div class="section-card-header"><span class="section-card-title">Recent Orders</span><button class="btn btn-sm" onclick="nav('orders')">View all</button></div>
+        <div>
+          ${ORDERS.map(o=>`
+            <div style="display:flex;align-items:center;gap:10px;padding:9px 16px;border-bottom:1px solid var(--color-border-tertiary)">
+              <div style="flex:1"><div style="font-size:13px;font-weight:500">#${o.id} — ${o.petName}</div><div style="font-size:11px;color:var(--color-text-secondary)">${o.customer}</div></div>
+              <span class="badge badge-${o.status}">${o.status}</span>
+            </div>`).join('')}
+        </div>
+      </div>
+    </div>
+    <div class="section-card" style="margin-top:0">
+      <div class="section-card-header"><span class="section-card-title">Status Distribution</span></div>
+      <div style="padding:16px;display:flex;gap:24px;align-items:center">
+        ${[['Available',avail,'var(--teal-400)'],['Pending',pending,'var(--amber-400)'],['Sold',sold,'var(--coral-400)']].map(([l,v,col])=>`
+          <div class="dist-row">
+            <div style="width:8px;height:8px;border-radius:50%;background:${col};flex-shrink:0"></div>
+            <div style="flex:1">
+              <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px"><span>${l}</span><span style="font-weight:500">${v}</span></div>
+              <div class="inventory-bar"><div class="inventory-fill" style="width:${Math.round(v/PETS.length*100)}%;background:${col}"></div></div>
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>`;
+}
+
+function renderPets(c,a){
+  a.innerHTML=`<button class="btn btn-primary" onclick="nav('add-pet')">+ Add Pet</button>`;
+  const statuses=['all','available','pending','sold'];
+  const filtered=filterStatus==='all'?PETS:PETS.filter(p=>p.status===filterStatus);
+  c.innerHTML=`
+    <div class="filters">
+      ${statuses.map(s=>`<div class="filter-tab ${filterStatus===s?'active':''}" onclick="setFilter('${s}')">${s==='all'?'All ('+PETS.length+')':s.charAt(0).toUpperCase()+s.slice(1)+' ('+PETS.filter(p=>p.status===s).length+')'}</div>`).join('')}
+      <input class="search-input" placeholder="Search pets..." oninput="searchPets(this.value)" id="pet-search" style="margin-left:auto">
+    </div>
+    <div class="pets-grid" id="pets-grid">
+      ${renderPetCards(filtered)}
+    </div>`;
+}
+
+function renderPetCards(list){
+  return list.map(p=>`
+    <div class="pet-card" onclick="openPet(${p.id})">
+      <div class="pet-avatar">${p.emoji}</div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div><div class="pet-name">${p.name}</div><div class="pet-meta">${p.category} · ID #${p.id}</div></div>
+        <span class="badge badge-${p.status}">${p.status}</span>
+      </div>
+      <div class="pet-tags">${p.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+      <div style="margin-top:8px;font-size:11px;color:var(--color-text-tertiary)">${p.photos} photo${p.photos!==1?'s':''}</div>
+    </div>`).join('');
+}
+
+function setFilter(s){filterStatus=s;renderPets(document.getElementById('main-content'),document.getElementById('topbar-actions'));}
+
+function searchPets(q){
+  const filtered=PETS.filter(p=>!q||p.name.toLowerCase().includes(q.toLowerCase())||p.category.toLowerCase().includes(q.toLowerCase()));
+  const fs=filterStatus==='all'?filtered:filtered.filter(p=>p.status===filterStatus);
+  document.getElementById('pets-grid').innerHTML=renderPetCards(fs);
+}
+
+function openPet(id){
+  selectedPet=PETS.find(p=>p.id===id);
+  currentPage='pet-detail';
+  document.getElementById('topbar-title').textContent='Pet Details';
+  renderPetDetail(document.getElementById('main-content'),document.getElementById('topbar-actions'));
+}
+
+function renderPetDetail(c,a){
+  if(!selectedPet){nav('pets');return;}
+  const p=selectedPet;
+  a.innerHTML=`<button class="btn btn-danger btn-sm">Delete</button><button class="btn btn-sm">Edit</button>`;
+  c.innerHTML=`
+    <button class="back-btn" onclick="nav('pets')">← Back to pets</button>
+    <div class="section-card">
+      <div style="padding:20px">
+        <div class="detail-header">
+          <div class="detail-avatar">${p.emoji}</div>
+          <div style="flex:1">
+            <div class="detail-name">${p.name}</div>
+            <div class="detail-id">Pet ID: #${p.id}</div>
+            <span class="badge badge-${p.status}">${p.status}</span>
+          </div>
+        </div>
+        <div class="field-grid">
+          <div class="field"><div class="field-label">Category</div><div class="field-val">${p.category}</div></div>
+          <div class="field"><div class="field-label">Status</div><div class="field-val"><span class="badge badge-${p.status}">${p.status}</span></div></div>
+          <div class="field"><div class="field-label">Tags</div><div class="field-val"><div class="pet-tags">${p.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div></div></div>
+          <div class="field"><div class="field-label">Photos</div><div class="field-val">${p.photos} uploaded</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="section-card">
+      <div class="section-card-header"><span class="section-card-title">Photo Gallery</span><button class="btn btn-sm">Upload Image</button></div>
+      <div style="padding:16px">
+        ${p.photos>0?`<div class="photo-preview">${Array(p.photos).fill(0).map(()=>`<div class="photo-thumb">${p.emoji}</div>`).join('')}<div class="photo-thumb" style="cursor:pointer;border:1.5px dashed var(--color-border-secondary);background:var(--color-background-secondary);font-size:14px;color:var(--color-text-tertiary)">+ Add</div></div>`:`<div class="upload-zone">Drop files here or click to upload photos of ${p.name}</div>`}
+      </div>
+    </div>
+    <div class="section-card">
+      <div class="section-card-header"><span class="section-card-title">Related Orders</span></div>
+      <div>
+        ${ORDERS.filter(o=>o.petId===p.id).length?ORDERS.filter(o=>o.petId===p.id).map(o=>`
+          <div style="display:flex;align-items:center;gap:10px;padding:9px 16px;border-bottom:1px solid var(--color-border-tertiary)">
+            <div style="flex:1"><div style="font-size:13px">Order #${o.id}</div><div style="font-size:11px;color:var(--color-text-secondary)">${o.customer} · ${o.shipDate}</div></div>
+            <span class="badge badge-${o.status}">${o.status}</span>
+          </div>`).join(''):`<div class="empty-state">No orders for this pet yet</div>`}
+      </div>
+    </div>`;
+}
+
+function renderAddPet(c,a){
+  a.innerHTML='';
+  c.innerHTML=`
+    <div class="section-card">
+      <div class="section-card-header"><span class="section-card-title">Pet Information</span></div>
+      <div style="padding:16px">
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Pet Name *</label><input class="form-input" placeholder="e.g. Buddy"></div>
+          <div class="form-group"><label class="form-label">Category</label>
+            <select class="form-select"><option>Dogs</option><option>Cats</option><option>Birds</option><option>Fish</option><option>Rabbits</option><option>Other</option></select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Status</label>
+            <select class="form-select"><option value="available">Available</option><option value="pending">Pending</option><option value="sold">Sold</option></select>
+          </div>
+          <div class="form-group"><label class="form-label">Tags <span style="color:var(--color-text-tertiary);font-size:10px">(comma separated)</span></label>
+            <input class="form-input" placeholder="e.g. playful, trained">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="section-card">
+      <div class="section-card-header"><span class="section-card-title">Photos</span></div>
+      <div style="padding:16px">
+        <div class="upload-zone">
+          <div style="font-size:28px;margin-bottom:8px">📷</div>
+          <div>Drag and drop pet photos here</div>
+          <div style="font-size:11px;color:var(--color-text-tertiary);margin-top:4px">PNG, JPG up to 10MB each</div>
+          <button class="btn btn-sm" style="margin-top:10px">Browse Files</button>
+        </div>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn" onclick="nav('pets')">Cancel</button>
+      <button class="btn btn-primary" onclick="alert('Pet saved! (mockup)')">Add Pet</button>
+    </div>`;
+}
+
+function renderInventory(c,a){
+  a.innerHTML='';
+  const avail=PETS.filter(p=>p.status==='available').length;
+  const pending=PETS.filter(p=>p.status==='pending').length;
+  const sold=PETS.filter(p=>p.status==='sold').length;
+  c.innerHTML=`
+    <div class="stats-grid" style="grid-template-columns:repeat(3,1fr)">
+      <div class="stat-card"><div class="stat-label">Available Stock</div><div class="stat-val" style="color:var(--teal-600)">${avail}</div></div>
+      <div class="stat-card"><div class="stat-label">Pending</div><div class="stat-val" style="color:var(--amber-600)">${pending}</div></div>
+      <div class="stat-card"><div class="stat-label">Sold</div><div class="stat-val" style="color:var(--coral-400)">${sold}</div></div>
+    </div>
+    <div class="section-card">
+      <div class="section-card-header"><span class="section-card-title">Inventory by Category</span><span style="font-size:11px;color:var(--color-text-secondary)">GET /store/inventory</span></div>
+      <table class="table">
+        <thead><tr><th>Category</th><th>Available</th><th>Pending</th><th>Sold</th><th>Total</th><th style="width:140px">Stock Level</th></tr></thead>
+        <tbody>
+          ${[['Dogs',3,1,1],['Cats',2,0,0],['Birds',0,1,0],['Fish',2,0,0],['Rabbits',0,1,0]].map(([cat,av,pe,so])=>`
+            <tr>
+              <td style="font-weight:500">${cat}</td>
+              <td><span class="badge badge-available">${av}</span></td>
+              <td><span class="badge badge-pending">${pe}</span></td>
+              <td><span class="badge badge-sold">${so}</span></td>
+              <td style="font-weight:500">${av+pe+so}</td>
+              <td><div class="inventory-bar"><div class="inventory-fill" style="width:${Math.round(av/(av+pe+so||1)*100)}%"></div></div></td>
+            </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>`;
+}
+
+function renderOrders(c,a){
+  a.innerHTML=`<button class="btn btn-primary btn-sm">+ New Order</button>`;
+  c.innerHTML=`
+    <div class="section-card">
+      <div class="section-card-header"><span class="section-card-title">All Orders</span><span style="font-size:11px;color:var(--color-text-secondary)">GET /store/order/{orderId}</span></div>
+      <table class="table">
+        <thead><tr><th>Order ID</th><th>Pet</th><th>Customer</th><th>Qty</th><th>Ship Date</th><th>Status</th><th></th></tr></thead>
+        <tbody>
+          ${ORDERS.map(o=>`
+            <tr>
+              <td style="font-weight:500;font-size:12px">#${o.id}</td>
+              <td>${o.petName}</td>
+              <td>${o.customer}</td>
+              <td>${o.quantity}</td>
+              <td style="color:var(--color-text-secondary);font-size:12px">${o.shipDate}</td>
+              <td><span class="badge badge-${o.status}">${o.status}</span></td>
+              <td><button class="btn btn-sm btn-danger">Delete</button></td>
+            </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>`;
+}
+
+function renderUsers(c,a){
+  a.innerHTML=`<button class="btn btn-primary btn-sm">+ Create User</button>`;
+  c.innerHTML=`
+    <div class="section-card">
+      <div class="section-card-header"><span class="section-card-title">User Accounts</span><span style="font-size:11px;color:var(--color-text-secondary)">GET /user/{username}</span></div>
+      <table class="table">
+        <thead><tr><th>User</th><th>Username</th><th>Email</th><th>Phone</th><th>Role</th><th>Status</th><th></th></tr></thead>
+        <tbody>
+          ${USERS.map(u=>`
+            <tr>
+              <td>
+                <div style="display:flex;align-items:center;gap:8px">
+                  <div style="width:28px;height:28px;border-radius:50%;background:var(--amber-50);border:1.5px solid var(--amber-100);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;color:var(--amber-600);flex-shrink:0">${u.firstName[0]}${u.lastName[0]}</div>
+                  <span style="font-weight:500">${u.firstName} ${u.lastName}</span>
+                </div>
+              </td>
+              <td style="color:var(--color-text-secondary);font-size:12px">@${u.username}</td>
+              <td style="font-size:12px;color:var(--color-text-secondary)">${u.email}</td>
+              <td style="font-size:12px">${u.phone}</td>
+              <td><span class="tag">${u.role}</span></td>
+              <td><span class="badge ${u.userStatus?'badge-available':'badge-sold'}">${u.userStatus?'active':'inactive'}</span></td>
+              <td><div style="display:flex;gap:4px"><button class="btn btn-sm">Edit</button><button class="btn btn-sm btn-danger">Delete</button></div></td>
+            </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>`;
+}
+
+render();
+</script>
+</body>
+</html>
