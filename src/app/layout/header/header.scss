@@ -1,0 +1,18 @@
+.topbar {
+  align-items: center;
+  background: var(--color-background-primary);
+  border-bottom: 1px solid var(--color-border-tertiary);
+  display: flex;
+  min-height: 64px;
+  padding: 14px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.topbar-title {
+  color: var(--color-text-primary);
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0;
+}
