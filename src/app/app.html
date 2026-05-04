@@ -1,18 +1,9 @@
-
-
-<app-header></app-header>
-<main class="main">
-  <div class="content">
-    <div class="left-side">
-
-      <h1>Hello, {{ title() }}</h1>
-      
-      <p>Congratulations! Your pet-store is running. 🎉</p>
-    </div>
+<div class="app-shell">
+  <app-side-panel></app-side-panel>
+  <div class="main-layout">
+    <app-header [title]="pageTitle"></app-header>
+    <main class="page-content">
+      <app-users-list />
+    </main>
   </div>
-
-</main>
-
-
-
-<router-outlet />
+</div>

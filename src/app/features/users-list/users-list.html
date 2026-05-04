@@ -1,0 +1,40 @@
+<section id = "users-list" class="users-card">
+  <div class="users-card-header">
+    <h2>User Accounts</h2>
+  </div>
+
+  @if (users.length > 0) {
+    <table class="users-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>User</th>
+          <th>Username</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Role</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (user of users; track user.id) {
+          <tr>
+            <td>#{{ user.id }}</td>
+            <td>{{ user.fullName }}</td>
+            <td>@{{ user.username }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.phone }}</td>
+            <td>{{ user.role }}</td>
+            <td>
+              <span class="status-badge" [class.status-inactive]="user.status === 'inactive'">
+                {{ user.status }}
+              </span>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  } @else {
+    <p class="users-empty">No users found.</p>
+  }
+</section>
