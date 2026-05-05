@@ -1,6 +1,12 @@
 <section id = "users-list" class="users-card">
   <div class="users-card-header">
     <h2>User Accounts</h2>
+    <button
+      type = "button"
+      class = "create-user-button"
+      (click) = "createUser()">
+      Create New User
+    </button>
   </div>
 
   @if (users.length > 0) {
@@ -15,10 +21,10 @@
           <th>Role</th>
           <th>Status</th>
         </tr>
-      </thead>
+      </thead>   
       <tbody>
         @for (user of users; track user.id) {
-          <tr>
+          <tr (click)="onRowClick(user)" [class.user-table-row-selected]="user.id === selectedUserId">
             <td>#{{ user.id }}</td>
             <td>{{ user.fullName }}</td>
             <td>@{{ user.username }}</td>

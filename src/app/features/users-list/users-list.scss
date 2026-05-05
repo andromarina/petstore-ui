@@ -29,6 +29,10 @@
   padding: 6px 12px;
 }
 
+.user-table-row-selected {
+  background: var(--color-background-secondary);
+}
+
 .create-user-button:hover {
   background: #854f0b;
   border-color: #854f0b;

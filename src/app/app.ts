@@ -1,14 +1,19 @@
 import { Component } from '@angular/core';
 import { Header } from "./layout/header/header";
 import { SidePanel } from './layout/side-panel/side-panel';
-import { UsersList } from './features/users-list/users-list';
+import { RouterOutlet } from "@angular/router";
 
 @Component({
   selector: 'app-root',
-  imports: [Header, SidePanel, UsersList],
+  standalone: true,
+  imports: [Header, SidePanel, RouterOutlet],
   templateUrl: './app.html',
-  styleUrl: './app.scss'
+  styleUrls: ['./app.scss']
 })
 export class App {
   protected readonly pageTitle = "Users";
+  onUserSelected() {
+    console.log('App level User selected');
+    // You can add additional logic here to handle the selected user
+  }
 }

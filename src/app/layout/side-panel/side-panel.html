@@ -5,11 +5,10 @@
   </div>
 
   <nav class="side-panel-nav">
-    
-      <div class="nav-item active">
-        <span>Users</span>       
-      </div>
-  
+
+    <a class="nav-item" routerLinkActive="active" routerLink="/" [routerLinkActiveOptions]="{ exact: true }">Dashboard</a>
+    <a class="nav-item" routerLinkActive="active" routerLink="/users" [routerLinkActiveOptions]="{ exact: true }">Users</a>
+
   </nav>
- 
+
 </aside>
