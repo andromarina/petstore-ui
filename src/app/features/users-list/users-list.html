@@ -8,7 +8,7 @@
       Create New User
     </button>
   </div>
-
+  @if(users$ | async; as users) {
   @if (users.length > 0) {
     <table class="users-table">
       <thead>
@@ -18,22 +18,21 @@
           <th>Username</th>
           <th>Email</th>
           <th>Phone</th>
-          <th>Role</th>
           <th>Status</th>
         </tr>
       </thead>   
       <tbody>
+
         @for (user of users; track user.id) {
           <tr (click)="onRowClick(user)" [class.user-table-row-selected]="user.id === selectedUserId">
             <td>#{{ user.id }}</td>
-            <td>{{ user.fullName }}</td>
+            <td>{{ user.firstName }} {{ user.lastName }}</td>
             <td>@{{ user.username }}</td>
             <td>{{ user.email }}</td>
             <td>{{ user.phone }}</td>
-            <td>{{ user.role }}</td>
             <td>
-              <span class="status-badge" [class.status-inactive]="user.status === 'inactive'">
-                {{ user.status }}
+              <span class="status-badge" [class.status-inactive]="user.userStatus === 0">
+                {{ user.userStatus }}
               </span>
             </td>
           </tr>
@@ -43,4 +42,5 @@
   } @else {
     <p class="users-empty">No users found.</p>
   }
+}
 </section>

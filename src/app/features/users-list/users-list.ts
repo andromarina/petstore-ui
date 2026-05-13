@@ -1,78 +1,30 @@
-import { Component, EventEmitter, inject, OnDestroy, Output } from '@angular/core';
+import { Component, EventEmitter, inject, OnDestroy, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
-
-type User = {
-  id: number;
-  username: string;
-  fullName: string;
-  email: string;
-  phone: string;
-  role: string;
-  status: 'active' | 'inactive';
-};
+import { Observable, Subscription, take } from 'rxjs';
+import { UserServiceTs } from '../../services/user.service.ts';
+import { PetstoreApiUser } from '../../models/user';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-users-list',
   templateUrl: './users-list.html',
   styleUrl: './users-list.scss',
+  imports: [AsyncPipe]
 })
 export class UsersList implements OnDestroy {
-  protected readonly users: User[] = [
-    {
-      id: 1,
-      username: 'johndoe',
-      fullName: 'John Doe',
-      email: 'john@petstore.io',
-      phone: '+1-555-0101',
-      role: 'Admin',
-      status: 'active',
-    },
-    {
-      id: 2,
-      username: 'alice.moss',
-      fullName: 'Alice Moss',
-      email: 'alice@petstore.io',
-      phone: '+1-555-0102',
-      role: 'Staff',
-      status: 'active',
-    },
-    {
-      id: 3,
-      username: 'bob.kane',
-      fullName: 'Bob Kane',
-      email: 'bob@petstore.io',
-      phone: '+1-555-0103',
-      role: 'Staff',
-      status: 'inactive',
-    },
-    {
-      id: 4,
-      username: 'carol.smith',
-      fullName: 'Carol Smith',
-      email: 'carol@petstore.io',
-      phone: '+1-555-0104',
-      role: 'Customer',
-      status: 'active',
-    },
-    {
-      id: 5,
-      username: 'dave.lee',
-      fullName: 'Dave Lee',
-      email: 'dave@petstore.io',
-      phone: '+1-555-0105',
-      role: 'Customer',
-      status: 'active',
-    },
-  ];
+  protected users: PetstoreApiUser[] =[];
+
+  protected readonly userNames: string[] = ['johndoe', 'alice.moss', 'bob.kane', 'carol.smith', 'dave.lee'];
   protected readonly router = inject(Router);
   protected readonly route = inject(ActivatedRoute);
+  protected readonly userService = inject(UserServiceTs);
   protected selectedUserId: number | null = null;
-  protected routeSub: Subscription;
+  users$: Observable<PetstoreApiUser[]> = this.userService.getUsersByUserNames(this.userNames);
+  protected routeSub$: Subscription;
   @Output() userSelected = new EventEmitter<void>();
 
   constructor() {
-    this.routeSub = this.route.queryParams.subscribe(params => {
+    this.routeSub$ = this.route.queryParams.subscribe(params => {
       const userId = params['id'];
       console.log('Query param id:', userId);
       if (userId) {        
@@ -81,20 +33,19 @@ export class UsersList implements OnDestroy {
     });
   }
   ngOnDestroy(): void {
-    this.routeSub.unsubscribe();
+    this.routeSub$.unsubscribe();
   }
 
   createUser() {
       console.log('Create User button clicked');
       this.userSelected.emit(); 
   }
-  onRowClick(user: User) { 
+  onRowClick(user: PetstoreApiUser) { 
     this.selectedUserId = user.id;
     this.router.navigate([], { 
       relativeTo: this.route, 
       queryParams: { id: user.id },
-      queryParamsHandling: 'merge'});
-    
+      queryParamsHandling: 'merge'});    
   }
 
 }
