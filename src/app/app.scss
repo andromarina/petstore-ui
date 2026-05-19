@@ -17,6 +17,16 @@
   padding: 20px;
 }
 
+.test-error-button {
+  background: #fcebeb;
+  border: 1px dashed #e24b4a;
+  color: #a32d2d;
+  cursor: pointer;
+  font-size: 12px;
+  margin: 0 20px;
+  padding: 6px 10px;
+}
+
 .event-message {
   background: var(--amber-50);
   border-bottom: 1px solid var(--color-border-tertiary);

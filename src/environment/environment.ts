@@ -1,3 +1,3 @@
 export const environment = {
-    apiBaseUrl: 'https://petstore.swagger.io/v2',
+    apiBaseUrl: 'https://petstore-backend-qtg6.onrender.com',
 };
