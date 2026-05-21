@@ -8,6 +8,25 @@
       Create New User
     </button>
   </div>
+
+  <div class="users-search" [formGroup]="searchControl">
+    <label class="users-search-field">
+      <span>Email</span>
+      <input type="text" formControlName="email" placeholder="gmail.com" />
+    </label>
+    <label class="users-search-field">
+      <span>First name</span>
+      <input type="text" formControlName="firstName" placeholder="John" />
+    </label>
+    <label class="users-search-field">
+      <span>Last name</span>
+      <input type="text" formControlName="lastName" placeholder="Doe" />
+    </label>
+    <div class="users-search-actions">
+      <button type="button" class="users-search-clear-button" (click)="clearSearch()">Clear</button>
+    </div>
+  </div>
+
   @if(users$ | async; as users) {
   @if (users.length > 0) {
     <table class="users-table">
