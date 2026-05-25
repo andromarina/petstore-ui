@@ -1,0 +1,75 @@
+<div class="dialog-backdrop" (click)="close()">
+  <div class="dialog-panel" (click)="$event.stopPropagation()">
+    <header class="dialog-header">
+      <h2>Create new user</h2>
+      <button type="button" class="dialog-close-button" (click)="close()">×</button>
+    </header>
+
+    <form class="dialog-form" [formGroup]="form" (ngSubmit)="submit()">
+      <div class="dialog-form-fields">
+        <label class="dialog-field">
+          <span>Username</span>
+          <input type="text" formControlName="username" placeholder="johndoe" />
+          @if (form.controls.username.invalid && form.controls.username.touched) {
+            <span class="dialog-field-error">Required</span>
+          }
+        </label>
+
+        <label class="dialog-field">
+          <span>First name</span>
+          <input type="text" formControlName="firstName" placeholder="John" />
+          @if (form.controls.firstName.invalid && form.controls.firstName.touched) {
+            <span class="dialog-field-error">Required</span>
+          }
+        </label>
+
+        <label class="dialog-field">
+          <span>Last name</span>
+          <input type="text" formControlName="lastName" placeholder="Doe" />
+          @if (form.controls.lastName.invalid && form.controls.lastName.touched) {
+            <span class="dialog-field-error">Required</span>
+          }
+        </label>
+
+        <label class="dialog-field">
+          <span>Email</span>
+          <input type="email" formControlName="email" placeholder="john@example.com" />
+          @if (form.controls.email.hasError('required') && form.controls.email.touched) {
+            <span class="dialog-field-error">Required</span>
+          }
+          @if (form.controls.email.hasError('email') && form.controls.email.touched) {
+            <span class="dialog-field-error">Invalid email</span>
+          }
+        </label>
+
+        <label class="dialog-field">
+          <span>Password</span>
+          <input type="password" formControlName="password" />
+          @if (form.controls.password.invalid && form.controls.password.touched) {
+            <span class="dialog-field-error">Required</span>
+          }
+        </label>
+
+        <label class="dialog-field">
+          <span>Phone (optional)</span>
+          <input type="text" formControlName="phone" placeholder="+1 555 0100" />
+        </label>
+
+        <label class="dialog-field">
+          <span>Status</span>
+          <select formControlName="userStatus">
+            <option [ngValue]="1">Active</option>
+            <option [ngValue]="0">Inactive</option>
+          </select>
+        </label>
+      </div>
+
+      <footer class="dialog-actions">
+        <button type="button" class="dialog-cancel-button" (click)="close()">Cancel</button>
+        <button type="submit" class="dialog-submit-button" [disabled]="submitting">
+          {{ submitting ? 'Creating…' : 'Create user' }}
+        </button>
+      </footer>
+    </form>
+  </div>
+</div>

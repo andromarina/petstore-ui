@@ -148,3 +148,46 @@
 .users-search-clear-button:hover {
   background: var(--color-background-secondary);
 }
+
+.users-table-actions-header,
+.users-table-actions {
+  text-align: center!important;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+.users-table-actions {
+  min-width: 140px;
+}
+
+.users-table-actions-group {
+  display: inline-flex;
+  flex-wrap: nowrap;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+.edit-user-button,
+.delete-user-button {
+  background: transparent;
+  border: 1px solid var(--color-border-tertiary);
+  border-radius: 8px;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  font-size: 12px;
+  padding: 4px 10px;
+}
+
+.edit-user-button:hover {
+  background: var(--color-background-secondary);
+  color: var(--color-text-primary, #111);
+}
+
+.delete-user-button {
+  border-color: #e24b4a;
+  color: #e24b4a;
+}
+
+.delete-user-button:hover {
+  background: #fcebeb;
+  color: #c73e3d;
+}

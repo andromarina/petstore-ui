@@ -1,0 +1,26 @@
+<div class="dialog-backdrop" (click)="close()">
+  <div class="dialog-panel" (click)="$event.stopPropagation()">
+    <header class="dialog-header">
+      <h2>Delete user</h2>
+      <button type="button" class="dialog-close-button" (click)="close()">×</button>
+    </header>
+
+    <div class="dialog-body">
+      <p class="delete-user-message">
+        Delete <strong>{{ user().firstName }} {{ user().lastName }}</strong>
+        (@{{ user().username }})?
+      </p>
+    </div>
+
+    <footer class="dialog-actions">
+      <button type="button" class="dialog-cancel-button" (click)="close()">Cancel</button>
+      <button
+        type="button"
+        class="dialog-delete-button"
+        [disabled]="deleting"
+        (click)="confirmDelete()">
+        {{ deleting ? 'Deleting…' : 'Delete' }}
+      </button>
+    </footer>
+  </div>
+</div>
