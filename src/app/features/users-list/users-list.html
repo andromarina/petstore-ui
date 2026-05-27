@@ -2,9 +2,9 @@
   <div class="users-card-header">
     <h2>User Accounts</h2>
     <button
-      type = "button"
-      class = "create-user-button"
-      (click) = "createUser()">
+      type="button"
+      class="create-user-button"
+      (click)="openCreateDialog()">
       Create New User
     </button>
   </div>
@@ -27,8 +27,7 @@
     </div>
   </div>
 
-  @if(users$ | async; as users) {
-  @if (users.length > 0) {
+  @if (users().length > 0) {
     <table class="users-table">
       <thead>
         <tr>
@@ -38,11 +37,12 @@
           <th>Email</th>
           <th>Phone</th>
           <th>Status</th>
+          <th class="users-table-actions-header">Actions</th>
         </tr>
       </thead>   
       <tbody>
 
-        @for (user of users; track user.id) {
+        @for (user of users(); track user.id) {
           <tr (click)="onRowClick(user)" [class.user-table-row-selected]="user.id === selectedUserId">
             <td>#{{ user.id }}</td>
             <td>{{ user.firstName }} {{ user.lastName }}</td>
@@ -54,6 +54,22 @@
                 {{ user.userStatus }}
               </span>
             </td>
+            <td class="users-table-actions">
+              <div class="users-table-actions-group">
+                <button
+                  type="button"
+                  class="edit-user-button"
+                  (click)="$event.stopPropagation(); openEditDialog(user)">
+                  Edit
+                </button>
+                <button
+                  type="button"
+                  class="delete-user-button"
+                  (click)="$event.stopPropagation(); openDeleteDialog(user)">
+                  Delete
+                </button>
+              </div>
+            </td>
           </tr>
         }
       </tbody>
@@ -61,5 +77,24 @@
   } @else {
     <p class="users-empty">No users found.</p>
   }
-}
 </section>
+
+@if (showCreateDialog) {
+  <app-create-user-dialog
+    (closed)="closeCreateDialog()"
+    (userCreated)="onUserCreated($event)" />
+}
+
+@if (showEditDialog && userToEdit) {
+  <app-edit-user-dialog
+    [user]="userToEdit"
+    (closed)="closeEditDialog()"
+    (userUpdated)="onUserUpdated($event)" />
+}
+
+@if (showDeleteDialog && userToDelete) {
+  <app-delete-user-dialog
+    [user]="userToDelete"
+    (closed)="closeDeleteDialog()"
+    (userDeleted)="onUserDeleted($event)" />
+}

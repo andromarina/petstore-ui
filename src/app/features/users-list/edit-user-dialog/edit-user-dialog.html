@@ -7,49 +7,82 @@
 
     <form class="dialog-form" [formGroup]="form" (ngSubmit)="submit()">
       <div class="dialog-form-fields">
-        <label class="dialog-field">
+        <label
+          class="dialog-field"
+          [class.dialog-field-invalid]="form.controls.username.invalid && form.controls.username.touched">
           <span>Username</span>
           <input type="text" formControlName="username" />
-          @if (form.controls.username.invalid && form.controls.username.touched) {
+          @if (form.controls.username.hasError('required') && form.controls.username.touched) {
             <span class="dialog-field-error">Required</span>
+          }
+          @if (form.controls.username.hasError('minlength') && form.controls.username.touched) {
+            <span class="dialog-field-error">Minimum 2 characters</span>
           }
         </label>
 
-        <label class="dialog-field">
+        <label
+          class="dialog-field"
+          [class.dialog-field-invalid]="form.controls.firstName.invalid && form.controls.firstName.touched">
           <span>First name</span>
           <input type="text" formControlName="firstName" />
-          @if (form.controls.firstName.invalid && form.controls.firstName.touched) {
+          @if (form.controls.firstName.hasError('required') && form.controls.firstName.touched) {
             <span class="dialog-field-error">Required</span>
+          }
+          @if (form.controls.firstName.hasError('minlength') && form.controls.firstName.touched) {
+            <span class="dialog-field-error">Minimum 2 characters</span>
           }
         </label>
 
-        <label class="dialog-field">
+        <label
+          class="dialog-field"
+          [class.dialog-field-invalid]="form.controls.lastName.invalid && form.controls.lastName.touched">
           <span>Last name</span>
           <input type="text" formControlName="lastName" />
-          @if (form.controls.lastName.invalid && form.controls.lastName.touched) {
+          @if (form.controls.lastName.hasError('required') && form.controls.lastName.touched) {
             <span class="dialog-field-error">Required</span>
+          }
+          @if (form.controls.lastName.hasError('minlength') && form.controls.lastName.touched) {
+            <span class="dialog-field-error">Minimum 2 characters</span>
           }
         </label>
 
-        <label class="dialog-field">
+        <label
+          class="dialog-field"
+          [class.dialog-field-invalid]="form.controls.email.invalid && form.controls.email.touched">
           <span>Email</span>
           <input type="email" formControlName="email" />
           @if (form.controls.email.hasError('required') && form.controls.email.touched) {
             <span class="dialog-field-error">Required</span>
+          }
+          @if (form.controls.email.hasError('minlength') && form.controls.email.touched) {
+            <span class="dialog-field-error">Minimum 2 characters</span>
           }
           @if (form.controls.email.hasError('email') && form.controls.email.touched) {
             <span class="dialog-field-error">Invalid email</span>
           }
         </label>
 
-        <label class="dialog-field">
+        <label
+          class="dialog-field"
+          [class.dialog-field-invalid]="form.controls.password.invalid && form.controls.password.touched">
           <span>Password (leave blank to keep current)</span>
           <input type="password" formControlName="password" />
+          @if (form.controls.password.hasError('minlength') && form.controls.password.touched) {
+            <span class="dialog-field-error">Minimum 6 characters</span>
+          }
         </label>
 
-        <label class="dialog-field">
+        <label
+          class="dialog-field"
+          [class.dialog-field-invalid]="form.controls.phone.invalid && form.controls.phone.touched">
           <span>Phone (optional)</span>
           <input type="text" formControlName="phone" />
+          @if (form.controls.phone.hasError('pattern') && form.controls.phone.touched) {
+            <span class="dialog-field-error">Digits only</span>
+          }
+          @if ((form.controls.phone.hasError('minlength') || form.controls.phone.hasError('maxlength')) && form.controls.phone.touched) {
+            <span class="dialog-field-error">Phone must be exactly 10 digits</span>
+          }
         </label>
 
         <label class="dialog-field">

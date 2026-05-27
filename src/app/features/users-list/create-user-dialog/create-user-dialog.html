@@ -10,24 +10,33 @@
         <label class="dialog-field">
           <span>Username</span>
           <input type="text" formControlName="username" placeholder="johndoe" />
-          @if (form.controls.username.invalid && form.controls.username.touched) {
+          @if (form.controls.username.hasError('required') && form.controls.username.touched) {
             <span class="dialog-field-error">Required</span>
+          }
+          @if (form.controls.username.hasError('minlength') && form.controls.username.touched) {
+            <span class="dialog-field-error">Minimum 2 characters</span>
           }
         </label>
 
         <label class="dialog-field">
           <span>First name</span>
           <input type="text" formControlName="firstName" placeholder="John" />
-          @if (form.controls.firstName.invalid && form.controls.firstName.touched) {
+          @if (form.controls.firstName.hasError('required') && form.controls.firstName.touched) {
             <span class="dialog-field-error">Required</span>
+          }
+          @if (form.controls.firstName.hasError('minlength') && form.controls.firstName.touched) {
+            <span class="dialog-field-error">Minimum 2 characters</span>
           }
         </label>
 
         <label class="dialog-field">
           <span>Last name</span>
           <input type="text" formControlName="lastName" placeholder="Doe" />
-          @if (form.controls.lastName.invalid && form.controls.lastName.touched) {
+          @if (form.controls.lastName.hasError('required') && form.controls.lastName.touched) {
             <span class="dialog-field-error">Required</span>
+          }
+          @if (form.controls.lastName.hasError('minlength') && form.controls.lastName.touched) {
+            <span class="dialog-field-error">Minimum 2 characters</span>
           }
         </label>
 
@@ -37,6 +46,9 @@
           @if (form.controls.email.hasError('required') && form.controls.email.touched) {
             <span class="dialog-field-error">Required</span>
           }
+          @if (form.controls.email.hasError('minlength') && form.controls.email.touched) {
+            <span class="dialog-field-error">Minimum 2 characters</span>
+          }
           @if (form.controls.email.hasError('email') && form.controls.email.touched) {
             <span class="dialog-field-error">Invalid email</span>
           }
@@ -45,14 +57,23 @@
         <label class="dialog-field">
           <span>Password</span>
           <input type="password" formControlName="password" />
-          @if (form.controls.password.invalid && form.controls.password.touched) {
+          @if (form.controls.password.hasError('required') && form.controls.password.touched) {
             <span class="dialog-field-error">Required</span>
+          }
+          @if (form.controls.password.hasError('minlength') && form.controls.password.touched) {
+            <span class="dialog-field-error">Minimum 6 characters</span>
           }
         </label>
 
         <label class="dialog-field">
           <span>Phone (optional)</span>
           <input type="text" formControlName="phone" placeholder="+1 555 0100" />
+          @if (form.controls.phone.hasError('pattern') && form.controls.phone.touched) {
+            <span class="dialog-field-error">Digits only</span>
+          }
+          @if ((form.controls.phone.hasError('minlength') || form.controls.phone.hasError('maxlength')) && form.controls.phone.touched) {
+            <span class="dialog-field-error">Phone must be exactly 10 digits</span>
+          }
         </label>
 
         <label class="dialog-field">

@@ -5,7 +5,7 @@ import { UserServiceTs } from '../../../services/user.service.ts';
 @Component({
   selector: 'app-delete-user-dialog',
   templateUrl: './delete-user-dialog.html',
-  styleUrls: ['../create-user-dialog/create-user-dialog.scss', './delete-user-dialog.scss'],
+  styleUrls: ['../dialog-common.scss', './delete-user-dialog.scss'],
 })
 export class DeleteUserDialog {
   protected readonly userService = inject(UserServiceTs);
