@@ -5,10 +5,21 @@
   </div>
 
   <nav class="side-panel-nav">
-
     <a class="nav-item" routerLinkActive="active" routerLink="/" [routerLinkActiveOptions]="{ exact: true }">Dashboard</a>
-    <a class="nav-item" routerLinkActive="active" routerLink="/users" [routerLinkActiveOptions]="{ exact: true }">Users</a>
-
+    @if (authService.isAdmin()) {
+      <a class="nav-item" routerLinkActive="active" routerLink="/users" [routerLinkActiveOptions]="{ exact: true }">Users</a>
+    }
   </nav>
 
+  @if (authService.user(); as currentUser) {
+    <div class="side-panel-user">
+      <div class="user-avatar">{{ currentUser.firstName.charAt(0) }}{{ currentUser.lastName.charAt(0) }}</div>
+      <div>
+        <div class="user-name">{{ currentUser.firstName }} {{ currentUser.lastName }}</div>
+        <div class="user-role">{{ currentUser.role }}</div>
+      </div>
+    </div>
+  }
+
+  <button type="button" class="logout-button" (click)="logout()">Sign out</button>
 </aside>

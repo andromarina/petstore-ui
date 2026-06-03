@@ -1,12 +1,14 @@
+import { UserRole } from './auth';
+
 export type PetstoreApiUser = {
   id: number;
   username: string;
   firstName: string;
   lastName: string;
   email: string;
-  password: string;
   phone: string;
   userStatus: number;
+  role: UserRole;
 };
 
 export type CreateUserRequest = {
@@ -17,6 +19,7 @@ export type CreateUserRequest = {
   password: string;
   phone: string;
   userStatus: number;
+  role?: UserRole;
 };
 
 export type UpdateUserRequest = {
@@ -27,4 +30,5 @@ export type UpdateUserRequest = {
   password: string;
   phone: string;
   userStatus: number;
+  role?: UserRole;
 };

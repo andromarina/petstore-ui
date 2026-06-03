@@ -1,14 +1,18 @@
-<div class="app-shell">
-  <app-side-panel></app-side-panel>
-  <div class="main-layout">
-    <app-error-banner></app-error-banner>
-    <app-header [title]="pageTitle"></app-header>
-    <!-- TODO: remove — temp demo only -->
-    <button type="button" class="test-error-button" (click)="testErrorBanner()">
-      Test error banner
-    </button>
-    <main class="page-content">
-      <router-outlet></router-outlet>
-    </main>
+@if (showShell()) {
+  <div class="app-shell">
+    <app-side-panel></app-side-panel>
+    <div class="main-layout">
+      <app-error-banner></app-error-banner>
+      <app-header [title]="pageTitle"></app-header>
+      <!-- TODO: remove — temp demo only -->
+      <button type="button" class="test-error-button" (click)="testErrorBanner()">
+        Test error banner
+      </button>
+      <main class="page-content">
+        <router-outlet></router-outlet>
+      </main>
+    </div>
   </div>
-</div>
+} @else {
+  <router-outlet></router-outlet>
+}
