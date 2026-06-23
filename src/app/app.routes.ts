@@ -5,6 +5,7 @@ import { guestGuard } from './core/guest.guard';
 import { Dashboard } from './features/dashboard/dashboard';
 import { Login } from './features/auth/login/login';
 import { UsersList } from './features/users-list/users-list';
+import { UsersPerformance } from './features/users-performance/users-performance';
 
 export const routes: Routes = [
   {
@@ -21,6 +22,11 @@ export const routes: Routes = [
     path: 'users',
     component: UsersList,
     canActivate: [authGuard, adminGuard],
+  },
+  {
+    path: 'users-performance',
+    component: UsersPerformance,
+    canActivate: [authGuard],
   },
   { path: '**', redirectTo: '' },
 ];

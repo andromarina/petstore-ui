@@ -1,0 +1,107 @@
+<section class="perf-card">
+  <div class="perf-card-header">
+    <div>
+      <h2>Users — Performance Homework</h2>
+      <p class="perf-subtitle">{{ allUsers.length | number }} users loaded &nbsp;·&nbsp; {{ filteredUsers.length | number }} visible</p>
+    </div>
+    <div class="perf-header-actions">
+      <!-- This button increments a counter to manually trigger change detection.
+           With the default CD strategy + method calls in the template, even one
+           click visibly stalls as Angular re-evaluates 20,000+ template expressions. -->
+      <button type="button" class="perf-trigger-button" (click)="triggerRender()">
+        Trigger CD &nbsp;<span class="perf-count">#{{ renderCount() }}</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Search bar -->
+  <div class="perf-search">
+    <label class="perf-search-field">
+      <span>Search</span>
+      <input
+        type="text"
+        [formControl]="searchControl"
+        placeholder="name, email or username…" />
+    </label>
+  </div>
+
+  <!-- ─────────────────────────────────────────────────────────────────────
+       TODO #4
+       PROBLEM: @for tracks rows by $index (array position).
+       When the list is filtered or reordered, Angular cannot reuse existing
+       DOM nodes — it destroys and recreates them based on their position,
+       not identity. With 10,000 rows this causes massive DOM churn.
+
+       FIX: Change  track $index  →  track user.id
+       Angular will then match DOM nodes to users by their unique ID and only
+       update rows that actually changed.
+       ───────────────────────────────────────────────────────────────────── -->
+
+  <!-- ─────────────────────────────────────────────────────────────────────
+       TODO #5
+       PROBLEM: All rows are rendered in the DOM simultaneously.
+       A 10,000-row table means 10,000 <tr> elements + all their children
+       exist in the DOM even though only ~20 are visible at any time.
+       This causes slow initial render, high memory use, and laggy scrolling.
+
+       FIX: Replace the plain <table>/<tbody> with CDK Virtual Scroll.
+
+       Steps:
+         1. npm install @angular/cdk
+         2. Add ScrollingModule to the component imports array.
+         3. Wrap the scrollable area:
+              <cdk-virtual-scroll-viewport itemSize="44" class="perf-viewport">
+         4. Replace @for with *cdkVirtualFor:
+              <tr *cdkVirtualFor="let user of filteredUsers; trackBy: trackById">
+         5. Add a trackById method:
+              trackById(_: number, user: MockUser) { return user.id; }
+
+       Note: CDK virtual scroll works best with fixed-height rows.
+       Set a fixed height on <tr> or use itemSize matching your row height.
+
+       Docs: https://material.angular.io/cdk/scrolling/overview
+       ───────────────────────────────────────────────────────────────────── -->
+
+  <div class="perf-table-wrapper">
+    <table class="perf-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Full Name</th>
+          <th>Username</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Department</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- TODO #4: change  track $index  to  track user.id -->
+        @for (user of filteredUsers; track $index) {
+          <tr>
+            <td class="col-id">#{{ user.id }}</td>
+
+            <!-- TODO #3: replace method call with a pure pipe
+                 {{ getFullName(user) }}  →  {{ user | fullName }} -->
+            <td>{{ getFullName(user) }}</td>
+
+            <td>@{{ user.username }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.phone }}</td>
+            <td>{{ user.department }}</td>
+
+            <!-- TODO #3: replace method call with a pure pipe
+                 {{ getStatusLabel(user.userStatus) }}  →  {{ user.userStatus | statusLabel }} -->
+            <td>
+              <span
+                class="status-badge"
+                [class.status-inactive]="user.userStatus === 0">
+                {{ getStatusLabel(user.userStatus) }}
+              </span>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>
