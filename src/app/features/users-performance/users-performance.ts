@@ -21,6 +21,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import {
+  ChangeDetectionStrategy,
   Component,
   // ChangeDetectionStrategy, // TODO #1: uncomment and add to @Component
   OnDestroy,
@@ -31,13 +32,14 @@ import { DecimalPipe } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, startWith, Subscription } from 'rxjs';
 import { generateMockUsers, MockUser } from './mock-users';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 @Component({
   selector: 'app-users-performance',
   templateUrl: './users-performance.html',
   styleUrl: './users-performance.scss',
-  imports: [ReactiveFormsModule, DecimalPipe],
-  // changeDetection: ChangeDetectionStrategy.OnPush, // TODO #1: uncomment this line
+  imports: [ReactiveFormsModule, DecimalPipe, ScrollingModule],
+  changeDetection: ChangeDetectionStrategy.OnPush, 
 })
 export class UsersPerformance implements OnInit, OnDestroy {
   protected readonly allUsers: MockUser[] = generateMockUsers(10_000);
@@ -80,6 +82,8 @@ export class UsersPerformance implements OnInit, OnDestroy {
         u.username.toLowerCase().includes(term),
     );
   }
+
+   trackById(_: number, user: MockUser) { return user.id; }
 
   ngOnInit(): void {
     // Keep renderCount in sync with form changes so the counter updates.

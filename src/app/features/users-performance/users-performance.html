@@ -2,7 +2,8 @@
   <div class="perf-card-header">
     <div>
       <h2>Users — Performance Homework</h2>
-      <p class="perf-subtitle">{{ allUsers.length | number }} users loaded &nbsp;·&nbsp; {{ filteredUsers.length | number }} visible</p>
+      <p class="perf-subtitle">{{ allUsers.length | number }} users loaded &nbsp;·&nbsp; {{ filteredUsers.length |
+        number }} visible</p>
     </div>
     <div class="perf-header-actions">
       <!-- This button increments a counter to manually trigger change detection.
@@ -18,10 +19,7 @@
   <div class="perf-search">
     <label class="perf-search-field">
       <span>Search</span>
-      <input
-        type="text"
-        [formControl]="searchControl"
-        placeholder="name, email or username…" />
+      <input type="text" [formControl]="searchControl" placeholder="name, email or username…" />
     </label>
   </div>
 
@@ -76,9 +74,10 @@
         </tr>
       </thead>
       <tbody>
-        <!-- TODO #4: change  track $index  to  track user.id -->
-        @for (user of filteredUsers; track $index) {
-          <tr>
+        <cdk-virtual-scroll-viewport itemSize="44" class="perf-viewport">
+          <!-- TODO #4: change  track $index  to  track user.id -->
+          <tr *cdkVirtualFor="let user of filteredUsers; trackBy: trackById">
+          
             <td class="col-id">#{{ user.id }}</td>
 
             <!-- TODO #3: replace method call with a pure pipe
@@ -93,14 +92,13 @@
             <!-- TODO #3: replace method call with a pure pipe
                  {{ getStatusLabel(user.userStatus) }}  →  {{ user.userStatus | statusLabel }} -->
             <td>
-              <span
-                class="status-badge"
-                [class.status-inactive]="user.userStatus === 0">
+              <span class="status-badge" [class.status-inactive]="user.userStatus === 0">
                 {{ getStatusLabel(user.userStatus) }}
               </span>
             </td>
-          </tr>
-        }
+          </tr>          
+
+        </cdk-virtual-scroll-viewport>
       </tbody>
     </table>
   </div>
